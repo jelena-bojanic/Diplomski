@@ -81,4 +81,27 @@ public class AuthenticationController {
     }
 
 
+    @RequestMapping(method = RequestMethod.GET, value = "/user")
+    public ResponseEntity<?> getCurrentUser() {
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) a.getPrincipal();
+
+        if(user.getRole() == Role.ADMIN) {
+            AdminDTO adminDTO = modelMapper.map(user, AdminDTO.class);
+            return new ResponseEntity<>(adminDTO, HttpStatus.OK);
+
+        }/*else if ( user.getRole() == Role.ENDUSER){
+
+            ClinicalCentreAdmin cca = clinicalCentreAdminService.findByEmail(user.getEmail());
+            ClinicalCentreAdminDTO ccaDTO = modelMapper.map(cca,ClinicalCentreAdminDTO.class);
+            return new ResponseEntity<>(ccaDTO, HttpStatus.OK);
+
+       }*/else {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+
 }
