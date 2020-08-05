@@ -14,4 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/facility", produces = MediaType.APPLICATION_JSON_VALUE)
 public class FacilityController {
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "/one/{id}")
+    public ResponseEntity<?> getOne(@PathVariable Long id) {
+        return new ResponseEntity<>(facilityService.getOne(id),HttpStatus.OK);
+    }
 }
