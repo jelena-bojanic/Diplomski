@@ -1,0 +1,14 @@
+.appbarButton{
+    font-family: 'Mulish', sans-serif;
+}
+
+.mainContent{
+    height: 100%;
+    width: 100%;
+    /*background-image: url('../../icons/Industrial-01.jpg');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    opacity: 0.8;*/
+}

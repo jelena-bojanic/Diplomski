@@ -1,0 +1,74 @@
+.loginCard{
+    width: 300px;
+    height: auto;
+    padding: 10px;
+    margin-top: 6%;
+    background-color: red;
+    padding:15px;
+    margin-left: 35%;
+
+}
+
+.keyIcon{
+    color: rgb(143, 199, 255);
+}
+
+.input{
+    width: 100px;
+    margin-top: 1%;
+}
+
+.emailGroup{
+    text-align: left;
+}
+
+.passwordGroup{
+    text-align: left;
+}
+
+
+.forgotPasswordGroup{
+    text-align: left;
+    
+}
+
+.submitButtonLogin{
+    
+    width: 100px;
+
+}
+
+.loginForm{
+    padding:10px;
+}
+
+.loggedInDiv{
+    margin-left: 90%;
+}
+
+.logoutButton{
+    height: 35px;
+    margin-left: 5%;
+}
+
+.logo{
+    margin-top: 7%;
+    margin-left: 18%;
+    width: 200px;
+    height: 200px;
+    position: relative;
+    
+}
+
+.forgotPasswordLink{
+    background-color: rgb(209, 231, 253);
+    border-radius: 5px;
+}
+
+@media only screen and (max-width: 1000px) {
+
+    .loginCard{
+        margin-left: 25%;
+    }
+   
+}
