@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Customer save(Customer customer);
+    Customer findByEmail(String email);
 
 }

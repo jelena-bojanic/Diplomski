@@ -4,6 +4,7 @@ import diplomskiProjekat.ReserveTableApp.model.Customer;
 import diplomskiProjekat.ReserveTableApp.model.Reservation;
 import diplomskiProjekat.ReserveTableApp.model.enums.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDTO {
@@ -20,7 +21,7 @@ public class CustomerDTO {
 
     private Role role;
 
-    private List<ReservationDTO> reservations;
+    private List<ReservationDTO> reservations =  new ArrayList<>();
 
     public CustomerDTO(){}
 
@@ -33,7 +34,8 @@ public class CustomerDTO {
         this.role = customer.getRole();
 
         for(Reservation r : customer.getReservations()){
-            ReservationDTO dto = new ReservationDTO();
+            ReservationDTO dto = new ReservationDTO(r);
+            this.getReservations().add(dto);
         }
     }
 

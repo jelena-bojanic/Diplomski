@@ -1,41 +1,45 @@
 import React from 'react';
-import { Card, Spinner } from 'react-bootstrap';
+import { Card, Spinner, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import {facility} from '../../RoutesConstants';
 import plant from '../../icons/plant.svg';
 import balcony from '../../icons/balcony.svg';
 import r from '../../icons/dinner.svg';
-
+import './RenderTables.css';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import { removeTableFromFacility } from '../../rest/restCallsFacility';
+import table from '../../icons/dinner.svg';
+import EditTable from './EditTable';
+import ReserveTableModal from './ReserveTableModal';
 
 class RenderTables extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-          tables : undefined,
-        }
-      }
+    deleteT = (t) => {
+        console.log(t);
+        console.log(this.props.facility);
+        removeTableFromFacility(this.props.facility,t,t.placement)
+    }
 
    render(){
-       if(this.state.tables !== undefined){
+       if(this.props.tables !== undefined){
        return(
-       <div style={{display:'flex',marginLeft:'3%'}}>
-          { this.state.tables.inGarden.reduce((acc, o) => acc + Object, 0) !== 0 &&
-              <div style={{marginLeft:'3%'}}>
-                <img src={plant} alt="garden" style={{height:'30px',width:'30px'}}></img>  <label style={{fontSize:'20px'}}>Garden</label>
+       <div className="renderTablesDiv">
+          { this.props.tables.inGarden.reduce((acc, o) => acc + Object, 0) !== 0 &&
+              <div className="smallDiv">
+                <p style={{fontSize:'20px'}}>Garden</p>
                 {this.renedrTGarden()}
             </div>
           }
-          { this.state.tables.inside.reduce((acc, o) => acc + Object, 0) !== 0 &&
-            <div style={{marginLeft:'3%'}}>
-                 <img src={r} alt="garden" style={{height:'30px',width:'30px'}}></img>  <label style={{fontSize:'20px'}}>Inside</label>
+          { this.props.tables.inside.reduce((acc, o) => acc + Object, 0) !== 0 &&
+            <div className="smallDiv">
+                <p style={{fontSize:'20px'}}>Inside</p>
               {this.renedrTInside()}
           </div>
           }
-          { this.state.tables.onBalcony.reduce((acc, o) => acc + Object, 0) !== 0 &&
-            <div style={{marginLeft:'3%'}}>
-                <img src={balcony} alt="garden" style={{height:'30px',width:'30px'}}></img>  <label style={{fontSize:'20px'}}>Balcony</label>
+          { this.props.tables.onBalcony.reduce((acc, o) => acc + Object, 0) !== 0 &&
+            <div className="smallDiv">
+                <p style={{fontSize:'20px'}}>Balcony</p>
               {this.renedrTBalcony()}
           </div>
           }
@@ -51,29 +55,26 @@ class RenderTables extends React.Component {
 
     }
 
-    getAllT(){
-        const options = {
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token")}
-          };
-          axios.get(`http://localhost:8081/table/all-from-facility/${this.props.facilityid}`, options).then(
-                    (response) => { this.setState({tables: response.data}); console.log(response.data) },
-                    (response) => {alert('error tables'); }
-                );
-    }
-
-    componentDidMount(){
-        this.getAllT();
-    }
-    
-
  renedrTInside(){
-    if(this.state.tables !== undefined){
-    return this.state.tables.inside.map(t =>
-        <Card key={t.id} style={{marginLeft:'2%',padding:'15px',height:'auto',width:'300px',marginTop:'3%'}}>
-            <Card.Title>{t.tableNum}</Card.Title>
-            <Card.Body>
-                <p>Zone: {t.zone}</p>
-
+    if(this.props.tables !== undefined){
+    return this.props.tables.inside.map(t =>
+        <Card className="insideTable" key={t.id} style={{marginLeft:'2%',padding:'15px',height:'auto',width:'300px',marginTop:'3%',borderRadius:'7px'}}>
+            {t.tableNum} 
+            <Card.Body style={{textAlign:'center'}}>
+            <Card.Img src={table} style={{height:'100px',width:'100px'}}></Card.Img>
+            <p>Number of seats: {t.numberOfSeats}</p>
+            <p>Zone: <b>{t.zone}</b></p>
+                <hr/>
+                { this.props.user.role === 'ADMIN' &&
+                    <div>
+                        <DeleteOutlineIcon fontSize="small" style={{cursor:'pointer',float:'right'}} onClick={() => { this.deleteT(t) }}/>
+                        <EditTable table={t} facility={this.props.facility}/>
+                    </div>
+                    }
+                    { this.props.user.role ===  'CUSTOMER' && 
+                    <ReserveTableModal table={t}  user={this.props.user} facility={this.props.facility} reservations={t.reservationList}/>
+                    }
+                
             </Card.Body>
         </Card>
         
@@ -83,13 +84,24 @@ class RenderTables extends React.Component {
 
 renedrTGarden(){
     
-    if(this.state.tables !== undefined){
-    return this.state.tables.inGarden.map(t =>
-        <Card key={t.id} style={{marginLeft:'2%',padding:'15px',height:'auto',width:'300px',marginTop:'3%'}}>
-            <Card.Title>{t.tableNum}</Card.Title>
-            <Card.Body>
-                <p>Zone: {t.zone}</p>
-
+    if(this.props.tables !== undefined){
+    return this.props.tables.inGarden.map(t =>
+        <Card className="gardenTable" key={t.id} style={{marginLeft:'2%',padding:'15px',height:'auto',width:'300px',marginTop:'3%',borderRadius:'7px'}}>
+           {t.tableNum} 
+            <Card.Body style={{textAlign:'center'}}>
+            <Card.Img src={table} style={{height:'100px',width:'100px'}}></Card.Img>
+            <p>Number of seats: {t.numberOfSeats}</p>
+            <p>Zone: <b>{t.zone}</b></p>
+                <hr/>
+                { this.props.user.role === 'ADMIN' &&
+                      <div>
+                        <DeleteOutlineIcon fontSize="small" style={{cursor:'pointer',float:'right'}} onClick={() => { this.deleteT(t) }}/>
+                        <EditTable table={t} facility={this.props.facility}/>
+                      </div>
+                }{ this.props.user.role ===  'CUSTOMER' && 
+                <ReserveTableModal user={this.props.user} table={t} facility={this.props.facility} reservations={t.reservationList}/>
+                }
+                
             </Card.Body>
         </Card>
         
@@ -99,13 +111,23 @@ renedrTGarden(){
 
 renedrTBalcony(){
     
-    if(this.state.tables !== undefined){
-    return this.state.tables.onBalcony.map(t =>
-        <Card key={t.id} style={{marginLeft:'2%',padding:'15px',height:'auto',width:'300px',marginTop:'3%'}}>
-            <Card.Title>{t.tableNum}</Card.Title>
-            <Card.Body>
-                <p>Zone: {t.zone}</p>
-
+    if(this.props.tables !== undefined){
+    return this.props.tables.onBalcony.map(t =>
+        <Card className="balconyTable" key={t.id} style={{marginLeft:'2%',padding:'15px',height:'auto',width:'300px',marginTop:'3%',borderRadius:'7px'}}>
+         {t.tableNum} 
+            <Card.Body style={{textAlign:'center'}}>
+            <Card.Img src={table} style={{height:'100px',width:'100px'}}></Card.Img>
+            <p>Number of seats: {t.numberOfSeats}</p>
+            <p>Zone: <b>{t.zone}</b></p>
+                <hr/>
+                { this.props.user.role === 'ADMIN' &&
+                      <div>
+                        <DeleteOutlineIcon fontSize="small" style={{cursor:'pointer',float:'right'}} onClick={() => { this.deleteT(t) }}/>
+                        <EditTable table={t} facility={this.props.facility}/>
+                      </div>
+                }{ this.props.user.role ===  'CUSTOMER' && 
+                <ReserveTableModal table={t} user={this.props.user} facility={this.props.facility} reservations={t.reservationList}/>
+                }
             </Card.Body>
         </Card>
         

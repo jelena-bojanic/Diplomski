@@ -1,7 +1,9 @@
 package diplomskiProjekat.ReserveTableApp.controller;
 
-import diplomskiProjekat.ReserveTableApp.dto.CustomerDTO;
+import diplomskiProjekat.ReserveTableApp.dto.*;
+import diplomskiProjekat.ReserveTableApp.model.Facility;
 import diplomskiProjekat.ReserveTableApp.service.FacilityService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,13 +19,44 @@ public class FacilityController {
     @Autowired
     FacilityService facilityService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/all")
+    @Autowired
+    ModelMapper modelMapper;
+
+    @GetMapping(value = "/all")
     public ResponseEntity<?> getAll() {
         return new ResponseEntity<>(facilityService.findAll(),HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/one/{id}")
+    @GetMapping(value = "/one/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
-        return new ResponseEntity<>(facilityService.getOne(id),HttpStatus.OK);
+        FacilityDTO f = new FacilityDTO(facilityService.getOne(id));
+        return new ResponseEntity<>(f,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> createFacility(@RequestBody CreateFacilityDTO facility) {
+        Facility f = facilityService.saveFacility(facility);
+        if(f != null) {
+            return new ResponseEntity<>(new FacilityDTO(f),HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> deleteFacility(@PathVariable Long id) {
+        if(facilityService.delete(id)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping(value = "/edit")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> editFaclity(@RequestBody FacilityDTO dto) {
+       return new ResponseEntity<>(new EditFacilityDTO(facilityService.updateFacility(dto),facilityService.findAll()),HttpStatus.OK);
     }
 }

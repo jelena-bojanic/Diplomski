@@ -97,13 +97,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/facility/all").permitAll()
                 .antMatchers("/facility/one/{id}").permitAll()
                 .antMatchers("/table/all-from-facility/{id}").permitAll()
-
-                /*
-                .antMatchers("/api/hotels").hasAnyRole("USER")
-                .antMatchers("/api/users").hasAnyRole("USER", "SYSTEM_ADMIN")
-                .antMatchers("/api/rentACars").hasAnyRole("SYSTEM_ADMIN")
-                */
-
                 .anyRequest().authenticated()
                 .and()
                 .cors().and()
@@ -127,6 +120,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
         web.ignoring().antMatchers("/");
         web.ignoring().antMatchers(HttpMethod.POST,"/auth/login");
+        web.ignoring().antMatchers(HttpMethod.POST,"/auth/register");
         web.ignoring().antMatchers(HttpMethod.GET,"/facility/all");
         web.ignoring().antMatchers(HttpMethod.GET,"/facility/one/{id}");
         web.ignoring().antMatchers(HttpMethod.GET,"/table/all-from-facility/{id}");

@@ -15,13 +15,17 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { styling } from '../../sidebarStyling';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import {login} from '../../RoutesConstants';
-import { Card } from "react-bootstrap";
+import {login, editInfo} from '../../RoutesConstants';
+import { Card, Spinner } from "react-bootstrap";
 import { sidebarList } from "./sidebarList";
-import AllFacilites from "../facility/AllFacilites";
-import OneFacility from "../facility/OneFacility";
+import AllFacilites from "../facility/render/AllFacilites";
+import OneFacility from "../facility/render/OneFacility";
+import CreateFacility from "../facility/add/CreateFacility";
+import { logout } from "../../rest/restCallsUser";
+import EditUserInfo from "../user/EditUserInfo";
+import ViewMyReservations from "../reservations/ViewMyReservations";
 
-const LoggedInHomepage = ({user,history,clearState,OneF,AllF}) => {
+const LoggedInHomepage = ({viewMyReservations,current_table,setCurrentTable,getLoggedInUser,isLoggedIn,editUser,user,history,OneF,AllF,NewF,facilites,facility,removeCurentFac,current_is_avaliable,getCurrent}) => {
     const [isOpen, setOpen] = useState(true);
     const handleDrawerOpen = () => { setOpen(true); };
     const handleDrawerClose = () => { setOpen(false); };
@@ -30,6 +34,7 @@ const LoggedInHomepage = ({user,history,clearState,OneF,AllF}) => {
     const classes = useStyles();
     console.log(AllF);
 
+    if(user.role !== 'NONE'){
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -39,8 +44,8 @@ const LoggedInHomepage = ({user,history,clearState,OneF,AllF}) => {
                         <MenuIcon style={{ color: 'black' }} />
                     </IconButton>
                     <div style={{ width: '100%' }}></div>
-                    <Button><AccountCircleIcon fontSize="large" style={{ color: 'gray' }}/></Button>
-                    <Button><CallMissedOutgoingIcon style={{ color: 'gray' }} onClick={() => { localStorage.clear(); clearState(); history.push(`${login}`); }} fontSize="large" className={classes.logoutButton} /></Button>
+                    <Button><AccountCircleIcon fontSize="large" style={{ color: 'gray' }} onClick={() => { history.push(`${editInfo}`); }}/></Button>
+                    <Button><CallMissedOutgoingIcon style={{ color: 'gray' }} onClick={() => { localStorage.clear(); logout(); history.push(`${login}`); }} fontSize="large" className={classes.logoutButton} /></Button>
                 </Toolbar>
             </AppBar>
             <MenuIcon />
@@ -56,14 +61,22 @@ const LoggedInHomepage = ({user,history,clearState,OneF,AllF}) => {
             <main className={clsx(classes.content, { [classes.contentShift]: isOpen })}>
                 <div className={classes.drawerHeader} />
                 { OneF === true &&
-                    <OneFacility/> 
+                    <OneFacility current_table={current_table} setCurrentTable={(table) => this.props.setCurrentTable(table)} getCurrent={(id) => getCurrent(id)}   user = {user} facility={facility} current_is_avaliable={current_is_avaliable} removeCurentFac={() => removeCurentFac()}/> 
                 }{
                     AllF === true &&
-                    <AllFacilites/>
+                    <AllFacilites facilites={facilites.facilites}/>
+                }{ NewF ===  true &&
+                    <CreateFacility/> 
+                }{  editUser === true && 
+                    <EditUserInfo user={user} isLoggedIn={isLoggedIn} getLoggedInUser={() => getLoggedInUser()} />
+                }{ viewMyReservations === true &&
+                    <ViewMyReservations user={user} isLoggedIn={isLoggedIn}/>
                 } 
             </main>
         </div>
     );
+            } 
+            
 }
 export default withRouter(LoggedInHomepage);
 

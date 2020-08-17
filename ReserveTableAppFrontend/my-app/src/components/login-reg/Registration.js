@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 import './Registration.css';
+import { register } from '../../rest/restCallsUser';
+import { withRouter } from 'react-router-dom';
 
 class Registration extends React.Component {
     constructor(props) {
@@ -23,6 +25,7 @@ class Registration extends React.Component {
            alert('pass dont match');
             return;
         }
+        register(this.state,this.props.history);
     }
 
     handleChange(e) {
@@ -44,10 +47,6 @@ class Registration extends React.Component {
                             <Form.Control required name="lastname" type="text" placeholder="Enter last name" className="input" onChange={this.handleChange} />
                         </Form.Group>
 
-                        <Form.Group >
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control required name="username" type="text" placeholder="Enter username" className="input" onChange={this.handleChange} />
-                        </Form.Group>
 
                         <Form.Group >
                             <Form.Label>Email address</Form.Label>
@@ -75,4 +74,4 @@ class Registration extends React.Component {
         );
     }
 }
-export default (Registration);
+export default withRouter(Registration);

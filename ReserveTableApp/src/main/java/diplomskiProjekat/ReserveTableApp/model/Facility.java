@@ -1,6 +1,10 @@
 package diplomskiProjekat.ReserveTableApp.model;
 
+import diplomskiProjekat.ReserveTableApp.dto.CreateFacilityDTO;
+import diplomskiProjekat.ReserveTableApp.dto.FacilityDTO;
+import diplomskiProjekat.ReserveTableApp.dto.TableDTO;
 import diplomskiProjekat.ReserveTableApp.model.enums.FacilityType;
+import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -36,16 +40,54 @@ public class Facility {
     @Column
     private String contactNumber;
 
-    private byte[] image;
+    @ElementCollection
+    private List<byte[]> files =  new ArrayList<>();
 
     @Column
     @Enumerated(EnumType.STRING)
     private FacilityType facilityType;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "facility")
     private List<Table> tables = new ArrayList<>();
 
+    @Column
+    private int tableCounter = tables.size();
+
+    @OneToMany(mappedBy = "facility")
+    private List<Reservation> reservations;
+
     public Facility(){}
+
+    public Facility(CreateFacilityDTO facility){
+        this.id = facility.getId();
+        this.name = facility.getName();
+        this.city = facility.getCity();
+        this.street = facility.getStreet();
+        this.petFriendly = facility.isPetFriendly();
+        this.startWorkingHours = facility.getStartWorkingHours();
+        this.endWorkingHours = facility.getEndWorkingHours();
+        this.contactNumber = facility.getContactNumber();
+        this.facilityType = facility.getType();
+        //this.getFiles().add(Base64.decodeBase64(facility.getFiles().getBytes()));
+
+    }
+
+    public Facility(FacilityDTO facility){
+        this.id = facility.getId();
+        this.name = facility.getName();
+        this.city = facility.getCity();
+        this.street = facility.getStreet();
+        this.petFriendly = facility.isPetFriendly();
+        this.startWorkingHours = facility.getStartWorkingHours();
+        this.endWorkingHours = facility.getEndWorkingHours();
+        this.contactNumber = facility.getContactNumber();
+        this.facilityType = facility.getType();
+        /*for(byte[] img : facility.getStringFiles()) {
+            byte[] imgByte = Base64.decodeBase64(img.getBytes());
+            this.files.add(imgByte);
+        }*/
+        this.files.add(facility.getStringFiles());
+    }
 
     public Long getId() {
         return id;
@@ -111,12 +153,20 @@ public class Facility {
         this.contactNumber = contactNumber;
     }
 
-    public byte[] getImage() {
-        return image;
+    public List<byte[]> getFiles() {
+        return files;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setFiles(List<byte[]> files) {
+        this.files = files;
+    }
+
+    public FacilityType getFacilityType() {
+        return facilityType;
+    }
+
+    public void setFacilityType(FacilityType facilityType) {
+        this.facilityType = facilityType;
     }
 
     public FacilityType getType() {
@@ -135,5 +185,19 @@ public class Facility {
         this.tables = tables;
     }
 
+    public int getTableCounter() {
+        return tableCounter;
+    }
 
+    public void setTableCounter(int tableCounter) {
+        this.tableCounter = tableCounter;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
 }

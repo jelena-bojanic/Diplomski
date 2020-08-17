@@ -3,9 +3,12 @@ package diplomskiProjekat.ReserveTableApp.dto;
 import diplomskiProjekat.ReserveTableApp.model.Facility;
 import diplomskiProjekat.ReserveTableApp.model.Table;
 import diplomskiProjekat.ReserveTableApp.model.enums.FacilityType;
+import diplomskiProjekat.ReserveTableApp.model.enums.TablePlacement;
+import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FacilityDTO {
@@ -26,11 +29,13 @@ public class FacilityDTO {
 
     private String contactNumber;
 
-    private byte[] image;
+    private byte[] stringFiles;
 
     private FacilityType type;
 
-    private List<TableDTO> tables;
+    private List<TableDTO> tables = new ArrayList<>();
+
+    private FacilitesTablesByPlacemntDTO facilitesTablesByPlacemntDTO = new FacilitesTablesByPlacemntDTO();
 
     public FacilityDTO(){}
 
@@ -43,11 +48,21 @@ public class FacilityDTO {
         this.startWorkingHours = facility.getStartWorkingHours();
         this.endWorkingHours = facility.getEndWorkingHours();
         this.contactNumber = facility.getContactNumber();
-        this.image = facility.getImage();
         this.type = facility.getType();
         for(Table table : facility.getTables()){
-            TableDTO dto = new TableDTO(table);
-            this.tables.add(dto);
+            if(table.getPlacement().equals(TablePlacement.INSIDE)){
+                this.facilitesTablesByPlacemntDTO.getInside().add(new TableDTO(table));
+            }
+            if(table.getPlacement().equals(TablePlacement.GARDEN)){
+                this.facilitesTablesByPlacemntDTO.getInGarden().add(new TableDTO(table));
+            }
+            if(table.getPlacement().equals(TablePlacement.BALCONY)){
+                this.facilitesTablesByPlacemntDTO.getOnBalcony().add(new TableDTO(table));
+            }
+            this.tables.add(new TableDTO(table));
+        }
+        if(facility.getFiles().size() != 0) {
+            this.stringFiles = facility.getFiles().get(0);
         }
     }
 
@@ -115,12 +130,12 @@ public class FacilityDTO {
         this.contactNumber = contactNumber;
     }
 
-    public byte[] getImage() {
-        return image;
+    public byte[] getStringFiles() {
+        return stringFiles;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setStringFiles(byte[] stringFiles) {
+        this.stringFiles = stringFiles;
     }
 
     public FacilityType getType() {
@@ -137,5 +152,13 @@ public class FacilityDTO {
 
     public void setTables(List<TableDTO> tables) {
         this.tables = tables;
+    }
+
+    public FacilitesTablesByPlacemntDTO getFacilitesTablesByPlacemntDTO() {
+        return facilitesTablesByPlacemntDTO;
+    }
+
+    public void setFacilitesTablesByPlacemntDTO(FacilitesTablesByPlacemntDTO facilitesTablesByPlacemntDTO) {
+        this.facilitesTablesByPlacemntDTO = facilitesTablesByPlacemntDTO;
     }
 }

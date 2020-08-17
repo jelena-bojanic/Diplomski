@@ -2,24 +2,31 @@ package diplomskiProjekat.ReserveTableApp.controller;
 
 import diplomskiProjekat.ReserveTableApp.dto.AdminDTO;
 import diplomskiProjekat.ReserveTableApp.dto.CustomerDTO;
+import diplomskiProjekat.ReserveTableApp.dto.EditUserDTO;
+import diplomskiProjekat.ReserveTableApp.dto.UserDTO;
 import diplomskiProjekat.ReserveTableApp.model.User;
 import diplomskiProjekat.ReserveTableApp.model.UserTokenState;
 import diplomskiProjekat.ReserveTableApp.model.enums.Role;
 import diplomskiProjekat.ReserveTableApp.security.TokenUtils;
 import diplomskiProjekat.ReserveTableApp.security.auth.JwtAuthenticationRequest;
 import diplomskiProjekat.ReserveTableApp.service.CustomUserDetailsService;
+import diplomskiProjekat.ReserveTableApp.service.CustomerService;
 import diplomskiProjekat.ReserveTableApp.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.security.Principal;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -41,10 +48,12 @@ public class AuthenticationController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private CustomerService customerService;
 
     public AuthenticationController() {}
 
-    @RequestMapping(method = RequestMethod.POST, value = "/register")
+    @PostMapping(value = "/register")
     public ResponseEntity<?> register(@RequestBody CustomerDTO customerDTO) {
 
         boolean registered = userService.register(customerDTO);
@@ -59,7 +68,7 @@ public class AuthenticationController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody JwtAuthenticationRequest authenticationRequest) {
 
         final Authentication authentication = authenticationManager
@@ -90,18 +99,30 @@ public class AuthenticationController {
             AdminDTO adminDTO = modelMapper.map(user, AdminDTO.class);
             return new ResponseEntity<>(adminDTO, HttpStatus.OK);
 
-        }/*else if ( user.getRole() == Role.ENDUSER){
+        }else if (user.getRole() == Role.CUSTOMER){
 
-            ClinicalCentreAdmin cca = clinicalCentreAdminService.findByEmail(user.getEmail());
-            ClinicalCentreAdminDTO ccaDTO = modelMapper.map(cca,ClinicalCentreAdminDTO.class);
-            return new ResponseEntity<>(ccaDTO, HttpStatus.OK);
+            CustomerDTO dto = new CustomerDTO(customerService.findOne(user.getId()));
+            return new ResponseEntity<>(dto, HttpStatus.OK);
 
-       }*/else {
-
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+       }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     }
 
+    @PutMapping(value = "/edit")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO dto) {
+        UserDTO returnDTO = userService.editUser(dto);
+        return  new ResponseEntity<>(returnDTO,HttpStatus.OK);
+
+    }
+
+    @PutMapping(value = "/update-password")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
+    public ResponseEntity<?> updatePassword(@RequestBody UserDTO dto) {
+        userService.updatePassword(dto);
+        return  new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

@@ -5,3 +5,6 @@ export const facilites =  '/facilites';
 export const facility =  '/facility';
 export const newfacility =  '/new-facility';
 export const facilityid = '/facility/:id';
+export const editInfo = '/edit-info';
+export const reservations = '/reservations';
+export const reservationsid = '/reservations/:id';

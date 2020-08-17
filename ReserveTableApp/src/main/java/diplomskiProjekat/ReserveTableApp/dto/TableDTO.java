@@ -7,6 +7,8 @@ import diplomskiProjekat.ReserveTableApp.model.enums.TablePlacement;
 import diplomskiProjekat.ReserveTableApp.model.enums.TableZone;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableDTO {
@@ -14,6 +16,8 @@ public class TableDTO {
     private Long id;
 
     private String facilityName;
+
+    private Long facilityId;
 
     private int tableNum;
 
@@ -23,7 +27,9 @@ public class TableDTO {
 
     private boolean isAvailable;
 
-    private List<ReservationDTO> reservationList;
+    private List<ReservationDTO> reservationList = new ArrayList<>();
+
+    private int numberOfSeats;
 
     public TableDTO(){}
 
@@ -35,9 +41,13 @@ public class TableDTO {
         this.placement = table.getPlacement();
         this.isAvailable = table.isAvailable();
         for(Reservation r: table.getReservationList()){
-            ReservationDTO dto = new ReservationDTO(r);
-            this.reservationList.add(dto);
+            if(r.getReservationDate().equals(LocalDate.now())) {
+                ReservationDTO dto = new ReservationDTO(r);
+                this.reservationList.add(dto);
+            }
         }
+        this.facilityId = table.getFacility().getId();
+        this.numberOfSeats = table.getNumberOfSeats();
     }
 
     public Long getId() {
@@ -94,5 +104,21 @@ public class TableDTO {
 
     public void setReservationList(List<ReservationDTO> reservationList) {
         this.reservationList = reservationList;
+    }
+
+    public Long getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(Long facilityId) {
+        this.facilityId = facilityId;
+    }
+
+    public int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
     }
 }

@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface FacilityRepository  extends JpaRepository<Facility, Long> {
     List<Facility> findAll();
     Optional<Facility> findById(Long id);
+    Facility save(Facility f);
+    void deleteById(Long id);
 }

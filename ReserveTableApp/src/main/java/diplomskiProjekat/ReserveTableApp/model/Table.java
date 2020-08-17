@@ -1,5 +1,7 @@
 package diplomskiProjekat.ReserveTableApp.model;
 
+import diplomskiProjekat.ReserveTableApp.dto.ReservationDTO;
+import diplomskiProjekat.ReserveTableApp.dto.TableDTO;
 import diplomskiProjekat.ReserveTableApp.model.enums.TablePlacement;
 import diplomskiProjekat.ReserveTableApp.model.enums.TableZone;
 
@@ -17,6 +19,7 @@ public class Table {
     private Long id;
 
     @ManyToOne
+    @JoinTable(name = "facility_tables", joinColumns = @JoinColumn(name = "table_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "facility_id", referencedColumnName = "id"))
     private Facility facility;
 
     @Column
@@ -33,10 +36,22 @@ public class Table {
     @Column
     private boolean isAvailable;
 
-    @OneToMany(mappedBy = "table", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private int numberOfSeats;
+
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "table")
     private List<Reservation> reservationList = new ArrayList<>();
 
     public Table() {}
+
+    public Table(TableDTO table) {
+        this.id = table.getId();
+        this.tableNum = table.getTableNum();
+        this.zone = table.getZone();
+        this.placement = table.getPlacement();
+        this.isAvailable = table.isAvailable();
+        this.numberOfSeats = table.getNumberOfSeats();
+    }
 
     public Long getId() {
         return id;
@@ -92,5 +107,13 @@ public class Table {
 
     public void setReservationList(List<Reservation> reservationList) {
         this.reservationList = reservationList;
+    }
+
+    public int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
     }
 }

@@ -1,0 +1,18 @@
+.editInfoCard{
+    margin-left: 2%;
+    padding: 15px;
+    height: auto;
+    width: 40%;
+    border-radius: 7px;
+}
+
+.inputFiled{
+    width:50%;
+}
+
+@media only screen and (max-width: 600px) {
+    .editInfoCard{
+        width: 100%;
+        margin-left: 0%;
+    }
+  }

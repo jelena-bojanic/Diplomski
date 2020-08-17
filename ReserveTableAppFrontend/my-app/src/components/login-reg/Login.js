@@ -5,6 +5,7 @@ import {withRouter} from 'react-router-dom';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import axios from 'axios';
 import {home} from '../../RoutesConstants';
+import { loginUser } from '../../rest/restCallsUser';
 
 class Login extends React.Component {
     constructor(props) {
@@ -24,21 +25,9 @@ class Login extends React.Component {
     async Login(e) {
         e.preventDefault(); 
 
-
-        const [loginResponse] = await Promise.all([
-            axios.post("http://localhost:8081/auth/login",this.state),
-          ]);
-
-        
-            if(loginResponse.data !== null){
-                localStorage.setItem('token', loginResponse.data.accessToken)
-                this.props.updateUser(loginResponse.data.accessToken);
-                this.props.history.push(`${home}`);
-            }else{
-                alert('error login');
-            }
-        
-        
+        loginUser(this.state);
+        this.props.history.push(`${home}`);      
+      
     }
 
     render() {

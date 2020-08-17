@@ -1,0 +1,12 @@
+.inputGroup{
+    margin: 10px;
+}
+
+.submitButton{
+    margin: 15px;
+    float: right
+}
+
+.inputFiled{
+    width:250px;
+}

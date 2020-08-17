@@ -1,6 +1,9 @@
 package diplomskiProjekat.ReserveTableApp.service.impl;
 
+import diplomskiProjekat.ReserveTableApp.dto.AdminDTO;
 import diplomskiProjekat.ReserveTableApp.dto.CustomerDTO;
+import diplomskiProjekat.ReserveTableApp.dto.EditUserDTO;
+import diplomskiProjekat.ReserveTableApp.dto.UserDTO;
 import diplomskiProjekat.ReserveTableApp.model.Authority;
 import diplomskiProjekat.ReserveTableApp.model.Customer;
 import diplomskiProjekat.ReserveTableApp.model.User;
@@ -72,6 +75,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         return false;
+    }
+
+    @Override
+    public UserDTO editUser(UserDTO dto) {
+        User original =  original = userRepository.findById(dto.getId()).get();
+
+        if(original.getName() != dto.getName()){
+            original.setName(dto.getName());
+        }
+        if(original.getLastname() != dto.getLastname()){
+            original.setLastname(dto.getLastname());
+        }
+        userRepository.save(original);
+        return new UserDTO(original);
+    }
+
+    @Override
+    public boolean updatePassword(UserDTO dto) {
+        User u = userRepository.findById(dto.getId()).get();
+        u.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userRepository.save(u);
+        return  true;
     }
 
 
