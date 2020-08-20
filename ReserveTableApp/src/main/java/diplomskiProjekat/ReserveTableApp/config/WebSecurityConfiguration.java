@@ -97,19 +97,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/facility/all").permitAll()
                 .antMatchers("/facility/one/{id}").permitAll()
                 .antMatchers("/table/all-from-facility/{id}").permitAll()
+                .antMatchers("/socket/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .cors().and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenUtils, jwtUserService), BasicAuthenticationFilter.class);
-			/*
-			.and()
-			.formLogin().loginPage("auth/login").permitAll()
-			.and()
-			.logout().permitAll();
-			*/
-
-
-
 
         http.csrf().disable();
     }

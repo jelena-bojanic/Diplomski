@@ -7,10 +7,25 @@ import { bindActionCreators } from 'redux';
 import * as facilityActions from '../facility/facilityActions';
 import { getOneFacility } from '../../rest/restCallsFacility';
 import { getUser } from '../../rest/restCallsUser';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import SockJsClient from 'react-stomp';
+import axios from 'axios';
+import { Button } from '@material-ui/core';
+
 const user = {
     role: 'NONE',
   }
 class Homepage extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+           loaded: false,
+        }
+
+    }
 
     removeCurentFac(){
         this.props.actionsFacility.removeCurrentFacility();
@@ -28,6 +43,39 @@ class Homepage extends React.Component {
         this.props.actionsFacility.currentTable(table);
     }
 
+    filterF(facilites){
+        this.props.actionsFacility.filter(facilites);
+    }
+
+
+        sendMessageUsingSocket() {
+              let message = {
+                message: 'hello',
+
+            };
+        
+        this.stompClient.send("/socket-subscriber/send/message", {}, JSON.stringify(message));
+              
+          }
+
+          handleResult(m) {
+            alert(m);
+          }
+
+     onConnected() {
+
+        console.log("its working");
+    
+    }
+    
+    
+     onError(error) {
+    
+        console.log(error);
+    }
+
+
+
     render() {
         return (
             <div>
@@ -40,6 +88,8 @@ class Homepage extends React.Component {
                facilites={this.props.facilites} 
                facility={this.props.facilites.current_facility}
                user={user}
+               filterF={(facilites) => this.filterF(facilites)}
+               filtered={this.props.facilites.filtered} 
                />
               }
               { (this.props.user.isLoggedIn === true && this.props.user.user.role !== 'NONE') &&
@@ -60,6 +110,8 @@ class Homepage extends React.Component {
               setCurrentTable={(table) => this.setCurrentTable(table)}
               current_table = {this.props.facilites.current_table} 
               viewMyReservations={this.props.viewMyReservations}
+              filterF={(facilites) => this.filterF(facilites)}
+              filtered={this.props.facilites.filtered}  
               />
               }
             </div>
@@ -80,3 +132,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Homepage));
+
+
+function onMessage(event) {
+    console.debug("WebSocket message received:", event);
+  };

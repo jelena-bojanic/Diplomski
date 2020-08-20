@@ -45,6 +45,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
+        else if(request.getQueryString() != null && request.getQueryString().contains("accessToken")){
+            String authTokenVersion2 = request.getParameterMap().get("accessToken")[0];
+            if(authTokenVersion2 != null){
+                email = tokenUtils.getEmailFromToken(authTokenVersion2);
+
+                if(email != null){
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                    if (tokenUtils.validateToken(authTokenVersion2, userDetails)) {
+                        // kreiraj autentifikaciju
+                        TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+                        authentication.setToken(authTokenVersion2);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
+            }
+        }
 
         filterChain.doFilter(request, response);
     }

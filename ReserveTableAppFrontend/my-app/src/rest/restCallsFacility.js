@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Swal from 'sweetalert2'
-import { initFacilites, currentFacility, addNewFacility ,addTableToF, removeTable,editTable, editFacility, createRes, currentTable} from '../components/facility/facilityActions';
+import {removeR, initFacilites, currentFacility, addNewFacility ,addTableToF, removeTable,editTable, editFacility, createRes, currentTable} from '../components/facility/facilityActions';
 import { userInfo } from '../components/user/userActions';
+import { reservations } from '../RoutesConstants';
 
 let reduxStore;
 export function setReduxStoreFacility(redux){
@@ -94,7 +95,13 @@ export function initalizeAllFacilites() {
                       confirmButtonText: 'Continue'
                     })
                   },
-                (response) => {alert('error creating table'); }
+                (response) => {
+                  Swal.fire({
+                    text: `Table can not be removed because it has future reservations.` ,
+                    icon: 'error',
+                    confirmButtonText: 'Continue'
+                  })
+                 }
         );
         
     
@@ -141,7 +148,31 @@ export function initalizeAllFacilites() {
                   
                   },
                 (response) => {alert('error creating reservation'); }
-        );
-        
-    
+        );          
   };
+
+  export  function filterFacilites(filter) {
+    const options = {
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token")}};
+
+            axios.get(`http://localhost:8081/facility/filter`,filter,options).then(
+                (response) => {  
+                    reduxStore.dispatch(initFacilites(response.data))},
+                (response) => {alert('error filtering facility'); }
+        );     
+  };
+
+  export  function removeReservation(reservation) {
+    const options = {
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token")}};
+
+            axios.delete(`http://localhost:8081/reservation/delete/${reservation.id}`,options).then(
+                (response) => {  
+                  reduxStore.dispatch(removeR(response.data));
+                  reduxStore.dispatch(userInfo(response.data.user));
+                 },
+                (response) => {alert('error removing reservation'); }
+        );     
+  };
+
+

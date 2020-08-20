@@ -7,6 +7,7 @@ const emptyState= {
     current_is_avaliable:false,
     current_table : undefined,
     is_current_table_avaliable: false,
+    filtered: [],
 }
 
 const updateList = (facility,facilites) =>{
@@ -82,7 +83,8 @@ export default function facilityReducer(state = emptyState ,action){
         case 'INIT_FACILITES':  
             return {
                 ...state,
-                facilites : action.facilites};
+                facilites : action.facilites,
+                filtered: action.facilites};
         case 'REMOVE_CURRENT':  
             return {
                     ...state,
@@ -135,6 +137,15 @@ export default function facilityReducer(state = emptyState ,action){
                 current_table: action.table,
                 is_current_table_avaliable :  true,
             }
+        case 'FILTER':  
+            return{
+                ...state,
+                filtered: action.facilites}
+        case 'REMOVE_RESERVATION':  
+            return{
+                ...state,
+                facilites: action.facilites,
+                current_facility:action.facility}
         default: 
             return state
     }

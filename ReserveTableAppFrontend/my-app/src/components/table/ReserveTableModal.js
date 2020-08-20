@@ -58,7 +58,7 @@ class ReserveTableModal extends React.Component {
             events : [],
             minutes:optionsMinutes[1].value,
             hours:optionsHours[0].value,
-            now : moment().format("HH:mm:ss"),
+            now : moment().format("HH:mm"),
             timeH:'',
             timeM: '',
             endOfShit:false,
@@ -109,56 +109,17 @@ class ReserveTableModal extends React.Component {
 
     }
 
-    /*createEvents(){
-
-        var events = [];
-
-        this.props.reservations.map((r, index) => {
-            
-            var reservationString = '';
-            if(r.startReservation[1] === 0){
-                reservationString = r.startReservation[0]+ ":" + r.startReservation[1]+"0";
-            }else{
-                reservationString = r.startReservation[0]+ ":" + r.startReservation[1];
-            }
-
-            var begin = moment(reservationString, "HH:mm:ss").format("HH:mm:ss");
-
-            var end = moment(reservationString, "HH:mm:ss").add(r.duration, 'minutes').format("HH:mm:ss");
-            
-            console.log(begin);
-  
-            console.log(parseInt(end.toString().substring(0,2)));
-            console.log(parseInt(end.toString().substring(3,5)));
-  
-              var startEvent = new Date(this.state.today.substring(0,4), this.state.today.substring(5,7)-1, parseInt(this.state.today.substring(8,11)), parseInt(begin.toString().substring(0,2)),parseInt(begin.toString().substring(3,5)), 0);
-              var endEvent = new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),parseInt(end.toString().substring(0,2)),parseInt(end.toString().substring(3,5)), 0);
-        
-           
-                events.push({
-                title: 'Reservation',
-                startDate: startEvent,
-                endDate: endEvent,
-                allDay: false,
-                    
-            });
-            
-            this.setState({events: events});
-        
-    })
-
-}*/
 
 handleSlotSelect(slotInfo) {
 
     var durInMin = parseInt(this.state.hours)*60 + parseInt(this.state.minutes);
 
     var startResevation = moment().hours(slotInfo.slots[0].getHours()).minutes(slotInfo.slots[0].getMinutes());
-    var endResevation = moment().hours(slotInfo.slots[0].getHours()).minutes(slotInfo.slots[0].getMinutes()).add(durInMin,'minutes');;
+    var endResevation = moment().hours(slotInfo.slots[0].getHours()).minutes(slotInfo.slots[0].getMinutes()).seconds(0).add(durInMin,'minutes');;
 
     var filtered = [];
     var isokay = true;
-    this.state.events.forEach(event => {
+    this.props.table.reservationList.forEach(event => {
         
         var eventStart = moment().hours(event.startDate.getHours()).minutes(event.startDate.getMinutes());
         var eventEnd = (moment().hours(event.endDate.getHours()).minutes(event.endDate.getMinutes()));
@@ -175,11 +136,12 @@ handleSlotSelect(slotInfo) {
     });
     if(isokay){
         Swal.fire({
-            text: `Are you sure you want to make a reservation that will start at ${slotInfo.start.toTimeString().split(' ')[0]} and end ${endResevation.format("HH:mm")}` ,
+            text: `Are you sure you want to make a reservation that will start at ${slotInfo.start.toTimeString().split(' ')[0]} and end ${endResevation.format("HH:mm:ss")}` ,
             icon: 'success',
             confirmButtonText: 'Continue'
         }).then((result) => {
             if (result.value) {
+                console.log(slotInfo.start.toTimeString().split(' ')[0]);
                var  reservation = {customerEmail: this.props.user.email,table_id: this.props.table.id,startReservation: slotInfo.start.toTimeString().split(' ')[0], duration: durInMin }
                console.log(reservation);
                createR(reservation);
@@ -197,14 +159,7 @@ handleSlotSelect(slotInfo) {
           });
           return;
     }
-    }
-
-        /*
-        this.customerEmail = r.getCustomer().getEmail();
-        this.table_id = r.getTable().getId();
-        this.startReservation = r.getStartReservation();
-        this.duration = r.getDuration();*/
-    
+}
 
 
     render() {
@@ -254,7 +209,6 @@ handleSlotSelect(slotInfo) {
                             events={this.props.table.reservationList}
                             timeslots={1}
                             step={30}
-                            view='day'
                             views={['day']}
                             defaultView='day'
                             defaultDate={new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),8,0, 0)}

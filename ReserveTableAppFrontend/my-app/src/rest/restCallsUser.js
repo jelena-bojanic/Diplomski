@@ -2,7 +2,8 @@ import axios from 'axios';
 import { userInfo, loggOut, login } from '../components/user/userActions';
 import { home } from '../RoutesConstants';
 import Swal from 'sweetalert2'
-
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
 
 let reduxStore;
 export function setReduxStoreUser(redux){
@@ -13,16 +14,41 @@ const user = {
   role: 'NONE',
 }
 
+const options = `accessToken=${localStorage.getItem('token')}`;
+let socket = '';
+let stompClient='';
+
+
 export function loginUser(user) {
 
         axios.post("http://localhost:8081/auth/login",user).then(
           (resp) => {
             localStorage.setItem('token', resp.data.accessToken);
+            console.log(resp.data);
             getUser();
+
+            /*const options = `accessToken=${resp.data.accessToken}`;
+            socket = new SockJS(`http://localhost:8081/socket/?${options}`);
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function () {
+              alert('connected');
+              openGlobalSocket(true);
+              
+              });*/
           },
           (resp) => { alert("error login"); return []; }
         );
   };
+
+  function openGlobalSocket(lodaded) {
+    if (lodaded) {
+        var message = 'caos';
+
+        stompClient.subscribe("/user/socket-publisher/",message => {
+            alert(message);
+          });
+    }
+  }
 
   export function getUser() {
     if (localStorage.getItem('token') === null || localStorage.getItem('token') === undefined) {
@@ -33,10 +59,20 @@ export function loginUser(user) {
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token')}
       };
 
+
+
       axios.get('http://localhost:8081/auth/user',options).then(
           (resp) => {
             reduxStore.dispatch(userInfo(resp.data));
-           // reduxStore.dispatch(login());
+
+          const token = `accessToken=${localStorage.getItem('token')}`;
+           socket = new SockJS(`http://localhost:8081/socket/?${token}`);
+           stompClient = Stomp.over(socket);
+           stompClient.connect({name:resp.data.email}, function () {
+             alert('connected');
+             openGlobalSocket(true);
+             
+             });
           },
           (resp) => { alert("error getting info"); console.log(resp); }
         );
@@ -45,6 +81,7 @@ export function loginUser(user) {
 
 export function logout() {
     reduxStore.dispatch(loggOut());
+    socket.close();
 };
 
 export function register(user,history) {

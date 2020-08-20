@@ -2,6 +2,7 @@ package diplomskiProjekat.ReserveTableApp.service.impl;
 
 import diplomskiProjekat.ReserveTableApp.dto.CreateFacilityDTO;
 import diplomskiProjekat.ReserveTableApp.dto.FacilityDTO;
+import diplomskiProjekat.ReserveTableApp.dto.FilterDTO;
 import diplomskiProjekat.ReserveTableApp.model.Facility;
 import diplomskiProjekat.ReserveTableApp.repository.FacilityRepository;
 import diplomskiProjekat.ReserveTableApp.service.FacilityService;
@@ -94,5 +95,6 @@ public class FacilityServiceImpl implements FacilityService {
         facilityRepository.save(original);
         return new FacilityDTO(original);
     }
+
 
 }

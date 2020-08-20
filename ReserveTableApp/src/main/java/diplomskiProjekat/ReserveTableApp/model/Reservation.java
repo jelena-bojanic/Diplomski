@@ -3,9 +3,11 @@ package diplomskiProjekat.ReserveTableApp.model;
 import com.sun.istack.Nullable;
 import diplomskiProjekat.ReserveTableApp.dto.ReservationDTO;
 
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.concurrent.ScheduledFuture;
 
 @Entity
 public class Reservation {
@@ -34,6 +36,7 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "facility_reservations", joinColumns = @JoinColumn(name = "reservation_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "facility_id", referencedColumnName = "id"))
     private Facility facility;
+
 
     public Reservation() {}
 
@@ -100,4 +103,6 @@ public class Reservation {
     public void setFacility(Facility facility) {
         this.facility = facility;
     }
+
+
 }

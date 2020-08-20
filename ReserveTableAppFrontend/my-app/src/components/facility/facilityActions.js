@@ -31,3 +31,9 @@ export function createRes(data){
 export function currentTable(table){ 
     return {type: 'CURRENT_TABLE',table: table}
 }
+export function filter(facilites){ 
+    return {type: 'FILTER',facilites: facilites}
+}
+export function removeR(data){ 
+    return {type: 'REMOVE_RESERVATION',facilites:data.facilites,facility:data.facility}
+}

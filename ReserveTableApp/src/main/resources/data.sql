@@ -52,7 +52,7 @@ insert into facility_tables(facility_id,table_id) values(-13,-13);
 ---reservations
 
 insert into reservation(id,start_reservation,customer_id,duration,reservation_date) values
-(-5,'10:30:00',-7,30,'2020-08-17');
+(-5,'15:30:00',-7,30,'2020-08-18');
 
 insert into reservation(id,start_reservation,customer_id,duration,reservation_date) values
 (-6,'21:30:00',-7,60,'2020-08-17');

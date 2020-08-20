@@ -5,6 +5,7 @@ import diplomskiProjekat.ReserveTableApp.dto.FacilitesTablesByPlacemntDTO;
 import diplomskiProjekat.ReserveTableApp.dto.FacilityDTO;
 import diplomskiProjekat.ReserveTableApp.dto.TableDTO;
 import diplomskiProjekat.ReserveTableApp.model.Facility;
+import diplomskiProjekat.ReserveTableApp.model.Reservation;
 import diplomskiProjekat.ReserveTableApp.model.Table;
 import diplomskiProjekat.ReserveTableApp.model.enums.TablePlacement;
 import diplomskiProjekat.ReserveTableApp.repository.TableRepository;
@@ -13,6 +14,7 @@ import diplomskiProjekat.ReserveTableApp.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,20 +59,23 @@ public class TableServiceImpl implements TableService {
     @Override
     public boolean deleteById(Long id,Long facilityId) {
         Table t = tableRepository.findById(id).get();
-        if(t.getReservationList().size() > 0){
-            return  false;
-        }else{
-            Facility f = facilityService.getOne(facilityId);
-            List<Table> tables = f.getTables();
-            for(Table table : tables){
-                if( table.getId() == t.getId()){
-                    tables.remove(table);
-                    tableRepository.deleteById(id);
-                    return true;
-                }
+        for(Reservation r : t.getReservationList()){
+            if(r.getReservationDate().isAfter(LocalDate.now()) || r.getReservationDate().isEqual(LocalDate.now())){
+                return false;
             }
-            return  true;
         }
+
+        Facility f = facilityService.getOne(facilityId);
+        List<Table> tables = f.getTables();
+        for(Table table : tables){
+            if( table.getId() == t.getId()){
+                tables.remove(table);
+                tableRepository.deleteById(id);
+                return true;
+            }
+        }
+            return  true;
+
     }
 
     @Override

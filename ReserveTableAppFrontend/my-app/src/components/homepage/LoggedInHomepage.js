@@ -25,7 +25,7 @@ import { logout } from "../../rest/restCallsUser";
 import EditUserInfo from "../user/EditUserInfo";
 import ViewMyReservations from "../reservations/ViewMyReservations";
 
-const LoggedInHomepage = ({viewMyReservations,current_table,setCurrentTable,getLoggedInUser,isLoggedIn,editUser,user,history,OneF,AllF,NewF,facilites,facility,removeCurentFac,current_is_avaliable,getCurrent}) => {
+const LoggedInHomepage = ({filtered,filterF,viewMyReservations,current_table,setCurrentTable,getLoggedInUser,isLoggedIn,editUser,user,history,OneF,AllF,NewF,facilites,facility,removeCurentFac,current_is_avaliable,getCurrent}) => {
     const [isOpen, setOpen] = useState(true);
     const handleDrawerOpen = () => { setOpen(true); };
     const handleDrawerClose = () => { setOpen(false); };
@@ -64,7 +64,7 @@ const LoggedInHomepage = ({viewMyReservations,current_table,setCurrentTable,getL
                     <OneFacility current_table={current_table} setCurrentTable={(table) => this.props.setCurrentTable(table)} getCurrent={(id) => getCurrent(id)}   user = {user} facility={facility} current_is_avaliable={current_is_avaliable} removeCurentFac={() => removeCurentFac()}/> 
                 }{
                     AllF === true &&
-                    <AllFacilites facilites={facilites.facilites}/>
+                    <AllFacilites filtered={filtered} facilites={facilites.facilites} filterF={(facilites) => filterF(facilites)} />
                 }{ NewF ===  true &&
                     <CreateFacility/> 
                 }{  editUser === true && 

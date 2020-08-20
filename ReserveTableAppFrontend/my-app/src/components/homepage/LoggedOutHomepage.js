@@ -5,7 +5,7 @@ import Appbar from "../appbar/Appbar";
 import AllFacilites from "../facility/render/AllFacilites";
 import OneFacility from "../facility/render/OneFacility";
 
-const LoggedOutHomepage = ({OneF,AllF,facilites,current_is_avaliable,getCurrent,facility,user,removeCurentFac}) => {
+const LoggedOutHomepage = ({filtered,filterF,OneF,AllF,facilites,current_is_avaliable,getCurrent,facility,user,removeCurentFac}) => {
     return (
         <div>
            <Appbar/>
@@ -14,7 +14,7 @@ const LoggedOutHomepage = ({OneF,AllF,facilites,current_is_avaliable,getCurrent,
                     <OneFacility current_is_avaliable={current_is_avaliable} facility={facility} user={user} removeCurentFac={() => removeCurentFac()} /> 
                 }{
                     AllF === true &&
-                    <AllFacilites facilites={facilites.facilites}/>
+                    <AllFacilites filtered={filtered} filterF={(facilites) => filterF(facilites)} facilites={facilites.facilites}/>
                 }                  
             </div>
         </div>

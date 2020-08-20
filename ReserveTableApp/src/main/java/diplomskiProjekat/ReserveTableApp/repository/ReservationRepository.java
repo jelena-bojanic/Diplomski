@@ -12,4 +12,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllByTable(Table table);
     Reservation save(Reservation r);
     List<Reservation> findAllByCustomerOrderByReservationDateDesc(Customer customer);
+    void deleteById(Long id);
 }

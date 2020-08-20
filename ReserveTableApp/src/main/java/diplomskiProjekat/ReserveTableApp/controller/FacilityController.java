@@ -59,4 +59,5 @@ public class FacilityController {
     public ResponseEntity<?> editFaclity(@RequestBody FacilityDTO dto) {
        return new ResponseEntity<>(new EditFacilityDTO(facilityService.updateFacility(dto),facilityService.findAll()),HttpStatus.OK);
     }
+
 }
