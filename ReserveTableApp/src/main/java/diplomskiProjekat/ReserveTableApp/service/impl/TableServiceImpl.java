@@ -48,7 +48,8 @@ public class TableServiceImpl implements TableService {
         table.setFacility(f);
         Table saved = tableRepository.save(table);
         if(saved != null){
-            //f.getTables().add(table);
+            f.getTables().add(table);
+            facilityService.saveModelFacility(f);
             return new TableDTO(saved);
         }else{
             return null;
