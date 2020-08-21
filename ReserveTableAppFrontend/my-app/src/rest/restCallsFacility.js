@@ -32,9 +32,9 @@ export function initalizeAllFacilites() {
   export function deleteFacility(facility) {
     const options = {
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token")}};
-    axios.delete(`http://localhost:8081/facility/delete/${this.state.facility.id}`, options).then(
+    axios.delete(`http://localhost:8081/facility/delete/${facility.id}`, options).then(
         (response) => { reduxStore.dispatch(deleteFacility(facility)) },
-        (response) => {alert('error deleting'); }
+        (response) => {alert(`Can not delete.This ${facility.type} has tables with upcoming reservations.`); }
     );
     
   };

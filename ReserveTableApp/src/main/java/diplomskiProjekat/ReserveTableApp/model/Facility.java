@@ -54,7 +54,7 @@ public class Facility {
     private int tableCounter = tables.size();
 
     @OneToMany(mappedBy = "facility")
-    private List<Reservation> reservations;
+    private List<Reservation> reservations = new ArrayList<>();
 
     public Facility(){}
 

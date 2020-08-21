@@ -75,17 +75,18 @@ public class ReservationServiceImpl implements ReservationService {
 
         Table table = tableService.getOne(dto.getTable_id());
         Reservation reservation = new Reservation(customerService.findOneByEmail(dto.getCustomerEmail()),table,dto.getDuration(),dto.getStartReservation(),facilityService.getOne(table.getFacility().getId()));
+        reservationRepository.save(reservation);
 
         table.getReservationList().add(reservation);
         Customer c = customerService.findOneByEmail(dto.getCustomerEmail());
         c.getReservations().add(reservation);
+        customerService.saveCustomer(c);
         Facility f = facilityService.getOne(table.getFacility().getId());
         f.getReservations().add(reservation);
         table.getReservationList().add(reservation);
         CreateReservationDTO createReservationDTO = new CreateReservationDTO(new FacilityDTO(f),facilityService.findAll(),new CustomerDTO(c));
 
         //schedule task
-
         LocalTime notificationTime = dto.getStartReservation().minus(15, ChronoUnit.MINUTES);
         LocalDateTime notificationDate = LocalDate.now().atTime(notificationTime);
         ZonedDateTime zonedNotificationDateTime = ZonedDateTime.of(notificationDate, ZoneId.systemDefault());
@@ -99,17 +100,11 @@ public class ReservationServiceImpl implements ReservationService {
         );
 
         this.future = future;
-        reservationRepository.save(reservation);
-        customerService.saveCustomer(c);
-        tableService.saveTable(new TableDTO(table));
-        facilityService.saveModelFacility(f);
 
          taskScheduler.schedule(
                 new NotificationTask(c,reservation,simpMessagingTemplate),
                 Instant.from(pomocniZone)
         );
-
-        //simpMessagingTemplate.convertAndSend("/socket-publisher/","vracamNazad");
         return  createReservationDTO;
     }
 
@@ -127,7 +122,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public RemoveReservationDTO removeReservation(Long id) {
         Reservation tobeDeleted = reservationRepository.findById(id).get();
-        this.future.cancel(true);
+        //this.future.cancel(true);
         Customer c = customerService.findOneByEmail(tobeDeleted.getCustomer().getEmail());
         Table t = tableService.getOne(tobeDeleted.getTable().getId());
         Facility f = facilityService.getOne(tobeDeleted.getFacility().getId());

@@ -4,6 +4,8 @@ import diplomskiProjekat.ReserveTableApp.dto.CreateFacilityDTO;
 import diplomskiProjekat.ReserveTableApp.dto.FacilityDTO;
 import diplomskiProjekat.ReserveTableApp.dto.FilterDTO;
 import diplomskiProjekat.ReserveTableApp.model.Facility;
+import diplomskiProjekat.ReserveTableApp.model.Reservation;
+import diplomskiProjekat.ReserveTableApp.model.Table;
 import diplomskiProjekat.ReserveTableApp.repository.FacilityRepository;
 import diplomskiProjekat.ReserveTableApp.service.FacilityService;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -11,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,12 +55,14 @@ public class FacilityServiceImpl implements FacilityService {
 
     @Override
     public boolean delete(Long id) {
-        if(facilityRepository.findById(id).get().getTables().size() != 0){
-            return  false;
-        }else{
+        for(Reservation r :facilityRepository.findById(id).get().getReservations()){
+            if(r.getStartReservation().isAfter(LocalTime.now())){
+                return false;
+            }
+        }
             facilityRepository.deleteById(id);
             return  true;
-        }
+
 
     }
 

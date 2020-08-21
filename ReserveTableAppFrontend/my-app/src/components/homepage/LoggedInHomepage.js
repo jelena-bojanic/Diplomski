@@ -26,7 +26,7 @@ import EditUserInfo from "../user/EditUserInfo";
 import ViewMyReservations from "../reservations/ViewMyReservations";
 
 const LoggedInHomepage = ({filtered,filterF,viewMyReservations,current_table,setCurrentTable,getLoggedInUser,isLoggedIn,editUser,user,history,OneF,AllF,NewF,facilites,facility,removeCurentFac,current_is_avaliable,getCurrent}) => {
-    const [isOpen, setOpen] = useState(true);
+    const [isOpen, setOpen] = useState(false);
     const handleDrawerOpen = () => { setOpen(true); };
     const handleDrawerClose = () => { setOpen(false); };
     const theme = useTheme();

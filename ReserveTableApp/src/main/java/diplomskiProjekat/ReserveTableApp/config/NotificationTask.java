@@ -28,9 +28,14 @@ public class NotificationTask implements  Runnable {
 
     @Override
     public void run() {
-
-        simpMessagingTemplate.convertAndSendToUser(customer.getEmail(),"/socket-publisher/",new Notification("Your reservation starts in "+ LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES)+" minutes"));
-
+        Long time;
+        if(LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES) > 60){
+            time = LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.HOURS);
+            simpMessagingTemplate.convertAndSendToUser(customer.getEmail(),"/socket-publisher/","Your reservation starts in "+ time +" hours");
+        }else{
+            time = LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES);
+            simpMessagingTemplate.convertAndSendToUser(customer.getEmail(),"/socket-publisher/","Your reservation starts in "+ time +" minutes");
+        }
     }
 
 }

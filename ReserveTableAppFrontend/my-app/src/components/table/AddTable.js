@@ -31,8 +31,8 @@ class AddTable extends React.Component{
         this.state = {         
             facilityName: this.props.facility.name,
             facilityId : this.props.facility.id,
-            zone:'',
-            placement:'',
+            zone:'SMOKING',
+            placement:'INSIDE',
             numberOfSeats:'',          
         }
     }
@@ -51,16 +51,14 @@ class AddTable extends React.Component{
 
     Add(e) {
         e.preventDefault();
-        var table = {zone:'',placement:'',numberOfSeats:this.state.numberOfSeats,facilityName: this.props.facility.name,facilityId : this.props.facility.id};
+        var table = {zone:'',placement:this.state.placement,numberOfSeats:this.state.numberOfSeats,facilityName: this.props.facility.name,facilityId : this.props.facility.id};
         if(this.state.zone === "") {
-            table.zone=optionsZones[0].value;
+            table.zone='SMOKING';
         }else{
             table.zone = this.state.zone;
         }
         if(this.state.placement === "") {
-            table.placement=optionsPlacement[0].value;
-        }else{
-            table.placement = this.state.placement;
+            table.placement='GARDEN';
         }
         addTableToFacility(this.props.facility,table,table.placement);
         this.handleClose();        
@@ -102,7 +100,7 @@ class AddTable extends React.Component{
                             options={optionsPlacement}
                             name="type"
                             className="inputFiled"
-                            defaultValue={optionsPlacement[0]}
+                            defaultValue={{label: this.state.placement,value: this.state.placement}}
                             required
                         />
                     </Form.Group>
@@ -115,7 +113,7 @@ class AddTable extends React.Component{
                             options={optionsZones}
                             name="type"
                             className="inputFiled"
-                            defaultValue={optionsZones[0]}
+                            defaultValue={{label: this.state.zone, value: this.state.zone}}
                             required
                         />
                     </Form.Group>

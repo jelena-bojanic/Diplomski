@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form, Button, Modal } from "react-bootstrap";
 import {updatepassword} from '../../rest/restCallsUser';
+import { withRouter } from 'react-router-dom';
+import { home, login } from '../../RoutesConstants';
 
 class UpdatePassword extends React.Component {
     constructor(props) {
@@ -41,6 +43,7 @@ class UpdatePassword extends React.Component {
         var user = {password:this.state.password,id:this.props.user.id}
         updatepassword(user);
         this.handleClose();
+         this.props.history.push(`${login}`);
         
     }
 
@@ -86,4 +89,4 @@ class UpdatePassword extends React.Component {
     }
 }
 
-export default UpdatePassword;
+export default withRouter(UpdatePassword);

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { userInfo, loggOut, login } from '../components/user/userActions';
-import { home } from '../RoutesConstants';
+import { home,login as l } from '../RoutesConstants';
 import Swal from 'sweetalert2'
+import { store } from 'react-notifications-component'
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 
@@ -44,9 +45,26 @@ export function loginUser(user) {
     if (lodaded) {
         var message = 'caos';
 
-        stompClient.subscribe("/user/socket-publisher/",message => {
-            alert(message);
-          });
+        stompClient.subscribe("/user/socket-publisher/");
+
+        socket.onmessage = function (event) {
+            store.addNotification({
+              title: "New notification",
+              message: event.data.substring(event.data.indexOf("Y")),
+              type: "success",
+              insert: "top",
+              container: "bottom-right",
+              animationIn: ["animated", "fadeIn"],
+              animationOut: ["animated", "fadeOut"],
+              dismiss: {
+                  duration: 2000,
+                  pauseOnHover: true
+              }
+
+          })
+         
+        }
+        
     }
   }
 
@@ -73,8 +91,9 @@ export function loginUser(user) {
              openGlobalSocket(true);
              
              });
+
           },
-          (resp) => { alert("error getting info"); console.log(resp); }
+          (resp) => { alert("please log in."); console.log(resp); }
         );
   };
 }
@@ -86,7 +105,7 @@ export function logout() {
 
 export function register(user,history) {
     axios.post("http://localhost:8081/auth/register",user).then(
-      (resp) => { history.push(`${home}`); },
+      (resp) => { history.push(`${l}`); },
       (resp) => { alert("error register"); return []; }
     );
 };

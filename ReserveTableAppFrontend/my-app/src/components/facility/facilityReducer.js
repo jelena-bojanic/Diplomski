@@ -79,7 +79,8 @@ export default function facilityReducer(state = emptyState ,action){
         case 'ADD_FACILITY':  
             return { ...state,
                     facilites : [...state.facilites,action.facility],
-                    current_facility: action.facility};
+                    current_facility: action.facility,
+                    filtered: [...state.facilites,action.facility] };
         case 'INIT_FACILITES':  
             return {
                 ...state,
@@ -112,6 +113,7 @@ export default function facilityReducer(state = emptyState ,action){
                 ...state,
                 current_facility: action.facility,
                 facilites :  action.facilites,
+                filtered: [...state.facilites,action.facility] 
             }
         case 'EDIT_TABLE':  
             return{
@@ -129,7 +131,7 @@ export default function facilityReducer(state = emptyState ,action){
             return{
                 ...state,
                 current_facility: createEvents(action.facility),
-                facilites :  action.facilites,
+                facilites :  action.facilites, 
             }
         case 'CURRENT_TABLE':  
             return{

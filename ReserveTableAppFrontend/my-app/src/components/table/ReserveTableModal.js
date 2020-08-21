@@ -134,6 +134,13 @@ handleSlotSelect(slotInfo) {
         }
         
     });
+
+    if(startResevation.isBefore(moment())){
+        isokay = false;
+    }
+
+
+
     if(isokay){
         Swal.fire({
             text: `Are you sure you want to make a reservation that will start at ${slotInfo.start.toTimeString().split(' ')[0]} and end ${endResevation.format("HH:mm:ss")}` ,
@@ -153,7 +160,7 @@ handleSlotSelect(slotInfo) {
         
     }else{
         Swal.fire({
-            text: `Reservation alreday exists in this period.Pick a smaller duration or another time` ,
+            text: `Not able to reserve at this time.You likely chose time that has passed or duration of your stay exceeds other reservations for this table.Pick a smaller duration or another time` ,
             icon: 'error',
             confirmButtonText: 'Continue'
           });
@@ -163,10 +170,10 @@ handleSlotSelect(slotInfo) {
 
 
     render() {
-        console.log(this.state);
+        console.log(new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),parseInt(this.state.timeH),parseInt(this.state.timeM), 0));
         return (
                 <div>           
-                <Button variant="outline-dark" onClick={this.handleShow} style={{float:'left'}}>Reservations</Button>
+                <Button variant="outline-dark" onClick={this.handleShow} style={{float:'center'}}>Reserve</Button>
                 <Modal
                     show={this.state.show}
                     onHide={this.handleClose}
@@ -214,8 +221,8 @@ handleSlotSelect(slotInfo) {
                             defaultDate={new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),8,0, 0)}
                             toolbar={false}
                             selectable={true}
-                            min= {new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),this.state.timeH,this.state.timeM, 0)}
-                            max = {new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),this.props.facility.endWorkingHours[0],this.props.facility.endWorkingHours[1], 0)}
+                            min= {new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),parseInt(this.props.facility.startWorkingHours[0]),parseInt(this.props.facility.startWorkingHours[1]), 0)}
+                            max = {new Date(parseInt(this.state.today.substring(0,4)), parseInt(this.state.today.substring(5,7))-1, parseInt(this.state.today.substring(8,11)),this.props.facility.endWorkingHours[0],this.props.facility.endWorkingHours[1]-30, 0)}
                             startAccessor="startDate"
                             endAccessor="endDate"
                             style={{height:'500px'}}

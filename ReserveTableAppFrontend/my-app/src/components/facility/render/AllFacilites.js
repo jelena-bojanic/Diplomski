@@ -10,7 +10,7 @@ import {facility} from '../../../RoutesConstants';
 import './AllFacilites.css';
 import { getOneFacility, filterFacilites } from '../../../rest/restCallsFacility';
 import moment from 'moment';
-
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 class AllFacilites extends React.Component {
 
@@ -23,7 +23,7 @@ class AllFacilites extends React.Component {
         this.state = {
             name:'',
             petFriendly:'',
-            openNow:true,    
+            openNow:'',    
         }
       }
 
@@ -42,7 +42,7 @@ class AllFacilites extends React.Component {
                     </div>
 
                     <div>
-                        <input type="checkbox" defaultChecked="true" id="openNow" name="openNow" value="openNow" onChange={this.handleOpenNow}/>
+                        <input type="checkbox" id="openNow" name="openNow" value="openNow" onChange={this.handleOpenNow}/>
                         <img alt="icon" src={time} style={{height:'20px',width:'20px',marginLeft:'1%'}}></img>
                         <label htmlFor="openNow">Open now</label><br/>
                     </div>
@@ -68,8 +68,8 @@ class AllFacilites extends React.Component {
             this.setState({petFriendly:true});
             var filter = {name:this.state.name,openNoW:this.state.openNow,petFriendly:true}
         }else{
-            this.setState({petFriendly:false});
-            var filter = {name:this.state.name,openNoW:this.state.openNow,petFriendly:false}
+            this.setState({petFriendly:''});
+            var filter = {name:this.state.name,openNoW:this.state.openNow,petFriendly:''}
         }
         this.Filter(filter);
     }
@@ -79,8 +79,8 @@ class AllFacilites extends React.Component {
             this.setState({openNow:true});
             var filter = {name:this.state.name,openNoW:true,petFriendly:this.state.petFriendly}
         }else{
-            this.setState({openNow:false});
-            var filter = {name:this.state.name,openNoW:false,petFriendly:this.state.petFriendly}
+            this.setState({openNow:''});
+            var filter = {name:this.state.name,openNoW:'',petFriendly:this.state.petFriendly}
         }
         this.Filter(filter);
     }
@@ -88,7 +88,7 @@ class AllFacilites extends React.Component {
     Filter(filter){
         var newf = [];
         console.log(filter);
-        if(filter.openNoW !== '' && filter.petFriendly !== ''){
+        if(filter.openNoW !== '' && filter.petFriendly !== '' && filter.name !== ''){
              newf = this.props.facilites.filter(f => 
             (f.name.toUpperCase().indexOf(filter.name.toUpperCase())>=0)  && (f.petFriendly === filter.petFriendly) 
             && (moment().isAfter(moment().hours(f.startWorkingHours[0]).minutes(f.startWorkingHours[1]))) 
@@ -96,6 +96,22 @@ class AllFacilites extends React.Component {
             console.log(newf);
             this.props.filterF(newf);
         }
+
+        if(filter.openNoW !== '' && filter.petFriendly !== '' && filter.name === ''){
+            newf = this.props.facilites.filter(f => 
+           ((f.petFriendly === filter.petFriendly) && (moment().isAfter(moment().hours(f.startWorkingHours[0]).minutes(f.startWorkingHours[1]))) 
+           &&(moment().isBefore(moment().hours(f.endWorkingHours[0]).minutes(f.endWorkingHours[1])))));
+           console.log(newf);
+           this.props.filterF(newf);
+       }
+
+       if(filter.openNoW === '' && filter.petFriendly === '' && filter.name !== ''){
+        newf = this.props.facilites.filter(f => 
+       (f.name.toUpperCase().indexOf(filter.name.toUpperCase())>=0));
+       console.log(newf);
+       this.props.filterF(newf);
+   }
+
         if(filter.openNoW !==  ''  && filter.petFriendly === ''){
              newf = this.props.facilites.filter(f => 
                 (f.name.toUpperCase().indexOf(filter.name.toUpperCase())>=0)  
@@ -110,7 +126,7 @@ class AllFacilites extends React.Component {
                 console.log(newf);
                 this.props.filterF(newf);
         }
-        if((filter.openNoW ===  ''  && filter.petFriendly === '' && filter.name === '') || (filter.openNoW ===  false &&filter.petFriendly === false && filter.name === '')){
+        if((filter.openNoW ===  ''  && filter.petFriendly === '' && filter.name === '') || (((filter.openNoW ===  false || filter.openNoW === '') && (filter.petFriendly === false || filter.petFriendly === '')) && filter.name === '')){
                this.props.filterF(this.props.facilites);
        }
     }
