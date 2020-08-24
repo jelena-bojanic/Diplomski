@@ -41,7 +41,13 @@ public class RunnableTask implements Runnable{
         mail.setTo(customer.getEmail());
         mail.setFrom("reserve.table.app@gmail.com");
         mail.setSubject("ReserveEasy: Notification");
-        mail.setText("Hello " + customer.getName() + ",\n\nYour reservation in "+ reservation.getFacility().getName()+" for table number "+ reservation.getTable().getTableNum()+" is starting in "+ LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES)+" minutes."+ "\n\n\nReserveEasy Team");
+        if(LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES) < 60) {
+            Long time = LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES);
+            mail.setText("Hello " + customer.getName() + ",\n\nYour reservation in " + reservation.getFacility().getName() + " for table number " + reservation.getTable().getTableNum() + " is starting in " + time + " min." + "\n\n\nReserveEasy Team");
+        }else if(LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES) > 60){
+            Long time = LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.HOURS);
+            mail.setText("Hello " + customer.getName() + ",\n\nYour reservation in " + reservation.getFacility().getName() + " for table number " + reservation.getTable().getTableNum() + " is starting in " + time + " h." + "\n\n\nReserveEasy Team");
+        }
         javaMailSender.send(mail);
 
 
