@@ -14,6 +14,7 @@ import './OneFacility.css';
 import moment from 'moment';
 import EditIcon from '@material-ui/icons/Edit';
 import EditFacility from "../edit/EditFacility";
+import { facilites } from "../../../RoutesConstants";
 
 class OneFacility extends React.Component {
 
@@ -29,6 +30,7 @@ class OneFacility extends React.Component {
 
     deleteF = () => {
         deleteFacility(this.props.facility);
+        this.props.history.push(`${facilites}`);
     }
 
     componentDidMount(){
