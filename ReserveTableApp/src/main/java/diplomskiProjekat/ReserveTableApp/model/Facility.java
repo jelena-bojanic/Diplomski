@@ -47,13 +47,13 @@ public class Facility {
     @Enumerated(EnumType.STRING)
     private FacilityType facilityType;
 
-    @OneToMany(mappedBy = "facility")
+    @OneToMany(mappedBy = "facility",cascade = CascadeType.ALL)
     private List<Table> tables = new ArrayList<>();
 
     @Column
     private int tableCounter = tables.size();
 
-    @OneToMany(mappedBy = "facility")
+    @OneToMany(mappedBy = "facility",cascade = CascadeType.ALL)
     private List<Reservation> reservations = new ArrayList<>();
 
     public Facility(){}
