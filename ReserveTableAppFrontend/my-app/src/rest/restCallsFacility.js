@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Swal from 'sweetalert2'
-import {removeR, initFacilites, currentFacility, addNewFacility ,addTableToF, removeTable,editTable, editFacility, createRes, currentTable} from '../components/facility/facilityActions';
+import {removeR, initFacilites, currentFacility, addNewFacility ,addTableToF, removeTable,editTable, editFacility, createRes, currentTable, deleteF} from '../components/facility/facilityActions';
 import { userInfo } from '../components/user/userActions';
-import { reservations } from '../RoutesConstants';
+import { reservations, facilites } from '../RoutesConstants';
 
 let reduxStore;
 export function setReduxStoreFacility(redux){
@@ -33,7 +33,9 @@ export function initalizeAllFacilites() {
     const options = {
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token")}};
     axios.delete(`http://localhost:8081/facility/delete/${facility.id}`, options).then(
-        (response) => { reduxStore.dispatch(deleteFacility(facility)) },
+        (response) => { 
+          reduxStore.dispatch(deleteF(response.data));
+         },
         (response) => {alert(`Can not delete.This ${facility.type} has tables with upcoming reservations.`); }
     );
     
