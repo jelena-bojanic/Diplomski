@@ -10,8 +10,8 @@ export function currentFacility(facility){
 export function removeCurrentFacility(){ 
     return {type: 'REMOVE_CURRENT'}
 }
-export function deleteFacility(facility){ 
-    return {type: 'DELETE_FACILITY',facility:facility}
+export function deleteF(data){ 
+    return {type: 'DELETE_FACILITY',facilites:data.facilites}
 }
 export function addTableToF(facility,table,placement){ 
     return {type: 'ADD_TABLE_TO_FACILITY',facility:facility,table:table,placement:placement}
