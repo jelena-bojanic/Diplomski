@@ -32,7 +32,7 @@ const LoggedInHomepage = ({filtered,filterF,viewMyReservations,current_table,set
     const theme = useTheme();
     const useStyles = makeStyles((theme) => (styling(theme)));
     const classes = useStyles();
-    console.log(AllF);
+
 
     if(user.role !== 'NONE'){
     return (
