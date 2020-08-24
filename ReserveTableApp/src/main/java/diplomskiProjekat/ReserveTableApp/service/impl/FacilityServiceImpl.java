@@ -1,6 +1,7 @@
 package diplomskiProjekat.ReserveTableApp.service.impl;
 
 import diplomskiProjekat.ReserveTableApp.dto.CreateFacilityDTO;
+import diplomskiProjekat.ReserveTableApp.dto.DeleteFacilityDTO;
 import diplomskiProjekat.ReserveTableApp.dto.FacilityDTO;
 import diplomskiProjekat.ReserveTableApp.dto.FilterDTO;
 import diplomskiProjekat.ReserveTableApp.model.Facility;
@@ -54,14 +55,14 @@ public class FacilityServiceImpl implements FacilityService {
     }
 
     @Override
-    public boolean delete(Long id) {
+    public DeleteFacilityDTO delete(Long id) {
         for(Reservation r :facilityRepository.findById(id).get().getReservations()){
             if(r.getStartReservation().isAfter(LocalTime.now())){
-                return false;
+                return null;
             }
         }
             facilityRepository.deleteById(id);
-            return  true;
+            return  new DeleteFacilityDTO(findAll());
 
 
     }
