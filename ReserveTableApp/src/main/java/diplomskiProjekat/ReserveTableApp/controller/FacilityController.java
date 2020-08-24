@@ -47,8 +47,9 @@ public class FacilityController {
     @DeleteMapping(value = "/delete/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteFacility(@PathVariable Long id) {
-        if(facilityService.delete(id)) {
-            return new ResponseEntity<>(HttpStatus.OK);
+        DeleteFacilityDTO dto = facilityService.delete(id);
+        if( dto != null) {
+            return new ResponseEntity<>(dto,HttpStatus.OK);
         }else{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
