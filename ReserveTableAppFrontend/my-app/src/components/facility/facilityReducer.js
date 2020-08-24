@@ -99,8 +99,9 @@ export default function facilityReducer(state = emptyState ,action){
         case 'DELETE_FACILITY':  
             return{
                 ...state,
-                current_facility: {},
-                facilites: updateList(action.facility,state.facilites),
+                current_facility: undefined,
+                facilites: action.facilites,
+                filtered: action.facilites
             }
         case 'ADD_TABLE_TO_FACILITY':  
             return{
