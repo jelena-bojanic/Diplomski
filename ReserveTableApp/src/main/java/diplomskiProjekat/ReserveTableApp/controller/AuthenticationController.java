@@ -112,9 +112,13 @@ public class AuthenticationController {
 
     @PutMapping(value = "/edit")
     @PreAuthorize("hasAnyAuthority('ADMIN','CUSTOMER')")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO dto) {
+    public ResponseEntity<?> updateUser(@RequestBody UserDTO dto) {
         UserDTO returnDTO = userService.editUser(dto);
-        return  new ResponseEntity<>(returnDTO,HttpStatus.OK);
+        if(returnDTO.getRole().equals(Role.CUSTOMER)){
+            return new ResponseEntity<>(new CustomerDTO(customerService.findOne(dto.getId())),HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(returnDTO, HttpStatus.OK);
+        }
 
     }
 
