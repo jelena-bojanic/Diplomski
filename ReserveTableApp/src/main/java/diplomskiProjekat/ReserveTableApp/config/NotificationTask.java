@@ -31,10 +31,10 @@ public class NotificationTask implements  Runnable {
         Long time;
         if(LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES) > 60){
             time = LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.HOURS);
-            simpMessagingTemplate.convertAndSendToUser(customer.getEmail(),"/socket-publisher/","Your reservation starts in "+ time +" hours");
+            simpMessagingTemplate.convertAndSendToUser(customer.getEmail(),"/socket-publisher/","Your reservation starts in "+ time +" h");
         }else{
             time = LocalTime.now().until(reservation.getStartReservation(), ChronoUnit.MINUTES);
-            simpMessagingTemplate.convertAndSendToUser(customer.getEmail(),"/socket-publisher/","Your reservation starts in "+ time +" minutes");
+            simpMessagingTemplate.convertAndSendToUser(customer.getEmail(),"/socket-publisher/","Your reservation starts in "+ time +" min");
         }
     }
 
